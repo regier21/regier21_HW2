@@ -22,33 +22,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/random_button"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@id/radioGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBarRed"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@id/spinnerHairStyle"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/seekBarGreen"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewRed"
+        app:layout_constraintHorizontal_chainStyle="spread"/>
 
     <SeekBar
         android:id="@+id/seekBarGreen"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="@id/seekBarRed"
         app:layout_constraintLeft_toRightOf="@id/seekBarRed"
         app:layout_constraintRight_toLeftOf="@id/seekBarBlue"
         app:layout_constraintTop_toBottomOf="@id/textViewGreen" />
 
     <SeekBar
         android:id="@+id/seekBarBlue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:max="255"
+        app:layout_constraintBottom_toBottomOf="@id/seekBarRed"
+        app:layout_constraintRight_toRightOf="@id/radioGroup"
         app:layout_constraintLeft_toRightOf="@id/seekBarGreen"
         app:layout_constraintTop_toBottomOf="@id/textViewBlue" />
 
@@ -60,7 +65,8 @@
         android:text="@string/red"
         app:layout_constraintBottom_toTopOf="@id/seekBarRed"
         app:layout_constraintLeft_toLeftOf="@id/seekBarRed"
-        app:layout_constraintRight_toRightOf="@id/seekBarRed" />
+        app:layout_constraintRight_toRightOf="@id/seekBarRed"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup" />
 
     <TextView
         android:id="@+id/textViewGreen"
@@ -86,29 +92,29 @@
 
     <RadioGroup
         android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/textViewGreen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonRandom">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioButtonHair"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/hair" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioButtonEyes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/eyes" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/radioButtonSkin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -117,27 +123,24 @@
 
     <Spinner
         android:id="@+id/spinnerHairStyle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintStart_toEndOf="@+id/textViewHairStyle"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRandom" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textViewHairStyle"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:gravity="center_vertical"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="@id/spinnerHairStyle"
-        app:layout_constraintEnd_toStartOf="@+id/spinnerHairStyle"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/spinnerHairStyle"
         app:layout_constraintTop_toTopOf="@id/spinnerHairStyle"
-        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/buttonRandom"
         tools:text="Hair Style:" />
 </android.support.constraint.ConstraintLayout>

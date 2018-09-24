@@ -136,6 +136,8 @@ public class Face{
     /**
      * Draws a face on {@code canvas} centered at (0, 0).
      *
+     * TODO: Add border around face
+     *
      * @param canvas The canvas to draw on. Center should be at (0, 0). Zoom should be where \
      *               edges are at -50 and 50 (FACE_RADIUS)
      */
