@@ -1,6 +1,7 @@
 package edu.up.campus.regier21.hw2;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -44,6 +45,16 @@ public class Face{
 
     public static final Path HAIR_PATH;
 
+    public static final float EYE_X = 20;
+    public static final float EYE_Y = -15;
+    public static final int EYE_RADIUS_OUTER = 5;
+    public static final int EYE_RADIUS_INNER = 3;
+    public static final Paint EYE_PAINT_OUTER;
+    public static final int EYE_BORDER_THICKNESS = 1;
+    public static final Paint EYE_PAINT_BORDER;
+    public static final int EYE_RADIUS_PUPIL = 1;
+    public static final Paint EYE_PAINT_PUPIL;
+
     //TODO: Cite source (23rd, Stack OVerflow tab)
     //Static initializers
     static {
@@ -56,6 +67,13 @@ public class Face{
         HAIR_PATH.addArc(new RectF(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, FACE_RADIUS),
                 0, -180);
         HAIR_PATH.addRect(new RectF(-FACE_RADIUS, 0, FACE_RADIUS, FACE_RADIUS), Path.Direction.CW);
+
+        EYE_PAINT_OUTER = new Paint();
+        EYE_PAINT_OUTER.setColor(Color.WHITE);
+        EYE_PAINT_BORDER = new Paint();
+        EYE_PAINT_BORDER.setColor(Color.BLACK);
+        EYE_PAINT_PUPIL = new Paint();
+        EYE_PAINT_PUPIL.setColor(Color.BLACK);
     }
 
     public void setSkinColor(@ColorInt int skinColor) {
@@ -176,5 +194,15 @@ public class Face{
         canvas.restore();
     }
 
-    protected void drawEyes(Canvas canvas){}
+    protected void drawEyes(Canvas canvas){
+        drawEye(canvas, EYE_X, EYE_Y);
+        drawEye(canvas, -EYE_X, EYE_Y);
+    }
+
+    private void drawEye(Canvas canvas, float x, float y){
+        canvas.drawCircle(x, y, EYE_RADIUS_OUTER + EYE_BORDER_THICKNESS, EYE_PAINT_BORDER);
+        canvas.drawCircle(x, y, EYE_RADIUS_OUTER, EYE_PAINT_OUTER);
+        canvas.drawCircle(x, y, EYE_RADIUS_INNER, eyePaint);
+        canvas.drawCircle(x, y, EYE_RADIUS_PUPIL, EYE_PAINT_PUPIL);
+    }
 }

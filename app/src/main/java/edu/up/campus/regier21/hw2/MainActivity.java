@@ -32,8 +32,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //TODO: Remove debug code when complete
         face = new Face();
         face.setSkinColor(Color.BLUE);
+        face.setEyeColor(Color.GREEN);
+
         faceView = findViewById(R.id.viewFace);
         faceView.setActivity(this);
 
