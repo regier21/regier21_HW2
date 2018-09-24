@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">HW2</string>
+    <string name="random_button">Random</string>
+    <string name="hair">Hair</string>
+    <string name="eyes">Eyes</string>
+    <string name="skin">Skin</string>
+    <string name="red">Red</string>
+    <string name="blue">Blue</string>
+    <string name="green">Green</string>
 </resources>

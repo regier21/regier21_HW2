@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    NOTE: The order of these items ought to correspond with the styles in Face.java
+    -->
+    <string-array name="hair_styles">
+        <item>Bald</item>
+        <item>Short</item>
+        <item>Long</item>
+    </string-array>
+</resources>
