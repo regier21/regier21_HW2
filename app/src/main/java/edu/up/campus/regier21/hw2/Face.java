@@ -9,6 +9,8 @@ import android.graphics.Region;
 import android.support.annotation.ColorInt;
 import android.util.Log;
 
+import java.util.Random;
+
 /**
  * @author Ryan Regier
  * @version 1.0
@@ -28,6 +30,7 @@ public class Face{
     private Paint eyePaint = new Paint();
     private Paint hairPaint = new Paint();
 
+    private Random random = new Random();
 
     //Static constants
     public static final int STYLE_BALD = 0;
@@ -131,7 +134,19 @@ public class Face{
         //hairPaint.setAntiAlias(true);
     }
 
-    protected void randomize(){}
+    protected void randomize(){
+        setHairColor(randomColor());
+        setEyeColor(randomColor());
+        setSkinColor(randomColor());
+        setHairStyle(random.nextInt(STYLES.length));
+    }
+
+    protected @ColorInt int randomColor(){
+        int red = random.nextInt(256);
+        int blue = random.nextInt(256);
+        int green = random.nextInt(256);
+        return Color.rgb(red, green, blue);
+    }
 
     /**
      * Draws a face on {@code canvas} centered at (0, 0).
@@ -163,6 +178,7 @@ public class Face{
     }
 
     //TODO: Remove constants
+    //TODO: Draw rectangles (using clip) to avoid pixelation
     protected void drawHair(Canvas canvas){
         canvas.save();
         canvas.clipPath(HAIR_PATH, Region.Op.INTERSECT); //Prevents hair from leaving top half of head

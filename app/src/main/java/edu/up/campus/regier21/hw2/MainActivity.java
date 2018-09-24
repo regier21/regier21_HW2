@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar redSeek;
     private SeekBar greenSeek;
     private SeekBar blueSeek;
+
+    private RadioGroup group;
+    private Spinner spinner;
 
     /**
      * Called to start program
@@ -59,11 +63,12 @@ public class MainActivity extends AppCompatActivity {
         greenSeek = findViewById(R.id.seekBarGreen);
         greenSeek.setOnSeekBarChangeListener(listener);
 
-        RadioGroup group = findViewById(R.id.radioGroup);
+        group = findViewById(R.id.radioGroup);
         group.setOnCheckedChangeListener(listener);
         group.check(R.id.radioButtonHair); //Also initializes seek bars in event listeners
 
-
+        ((Button) findViewById(R.id.buttonRandom))
+                .setOnClickListener(new RandomButtonListener());
     }
 
     /**
@@ -81,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.hair_styles, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinner = findViewById(R.id.spinnerHairStyle);
+        spinner = findViewById(R.id.spinnerHairStyle);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new SpinnerListener());
+        spinner.setOnItemSelectedListener(new StyleSpinnerListener());
     }
 
     public void drawFace(Canvas canvas){
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("MainActivity", "Drawn Face");
     }
 
-    protected class SpinnerListener implements AdapterView.OnItemSelectedListener{
+    protected class StyleSpinnerListener implements AdapterView.OnItemSelectedListener{
         /**
          * Called when a hair style is selected
          * @param parent Ignored
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             face.setHairStyle(position);
             faceView.invalidate();
-            //Log.d("SpinnerListener", String.format("Hair style: %d", position));
+            //Log.d("StyleSpinnerListener", String.format("Hair style: %d", position));
         }
 
         @Override
@@ -182,12 +187,27 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-
+            //Required method
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
+            //Required method
+        }
+    }
 
+    protected class RandomButtonListener implements Button.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            face.randomize();
+            faceView.invalidate();
+
+            //Forces sliders to update
+            @IdRes int id = group.getCheckedRadioButtonId();
+            group.clearCheck();
+            group.check(id);
+
+            spinner.setSelection(face.getHairStyle());
         }
     }
 }
