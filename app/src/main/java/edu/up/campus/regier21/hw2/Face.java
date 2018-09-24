@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.support.annotation.ColorInt;
 import android.util.Log;
 
@@ -26,6 +27,8 @@ public class Face{
     private Paint eyePaint = new Paint();
     private Paint hairPaint = new Paint();
 
+
+    //Static constants
     public static final int STYLE_BALD = 0;
     public static final int STYLE_SHORT = 1;
     public static final int STYLE_LONG = 2;
@@ -33,6 +36,27 @@ public class Face{
     private int hairStyle = STYLE_BALD;
 
     public static final int FACE_RADIUS = 50;
+
+    public static final float LONG_HAIR_ARC_ANGLE = 20;
+    public static final float LONG_HAIR_RECT_X;
+    public static final float LONG_HAIR_RECT_Y;
+    public static final int LONG_HAIR_RECT_WIDTH = 20;
+
+    public static final Path HAIR_PATH;
+
+    //TODO: Cite source (23rd, Stack OVerflow tab)
+    //Static initializers
+    static {
+        //Set long hair offsets
+        double radians = Math.toRadians(LONG_HAIR_ARC_ANGLE);
+        LONG_HAIR_RECT_X = (float) (FACE_RADIUS * Math.cos(radians)) + 10;
+        LONG_HAIR_RECT_Y = (float) (-FACE_RADIUS * Math.sin(radians)) - 10;
+
+        HAIR_PATH = new Path();
+        HAIR_PATH.addArc(new RectF(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, FACE_RADIUS),
+                0, -180);
+        HAIR_PATH.addRect(new RectF(-FACE_RADIUS, 0, FACE_RADIUS, FACE_RADIUS), Path.Direction.CW);
+    }
 
     public void setSkinColor(@ColorInt int skinColor) {
         this.skinColor = skinColor;
@@ -51,7 +75,7 @@ public class Face{
 
     /**
      * Will fail if {@code hairStyle} is not in {@code STYLES}
-     * @param hairStyle
+     * @param hairStyle The new hair style for the face
      */
     public void setHairStyle(int hairStyle) {
         for (int style : STYLES) {
@@ -86,8 +110,7 @@ public class Face{
         eyePaint.setColor(eyeColor);
         hairPaint.setColor(hairColor);
         skinPaint.setColor(skinColor);
-        hairPaint.setAntiAlias(true);
-
+        //hairPaint.setAntiAlias(true);
     }
 
     protected void randomize(){}
@@ -114,21 +137,43 @@ public class Face{
         drawHair(canvas);
     }
 
+    private void drawHairArc(Canvas canvas, float start, float sweep){
+        canvas.drawArc(new RectF(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, FACE_RADIUS),
+                start, sweep, false, hairPaint);
+    }
+
+    //TODO: Remove constants
     protected void drawHair(Canvas canvas){
+        canvas.save();
+        canvas.clipPath(HAIR_PATH, Region.Op.INTERSECT); //Prevents hair from leaving top half of head
+
         switch (hairStyle){
             case STYLE_BALD:
                 //Draw nothing
                 break;
             case STYLE_SHORT:
-                canvas.drawArc(new RectF(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, FACE_RADIUS),
-                        -45, -90, false, hairPaint);
+                drawHairArc(canvas,-45, -90);
                 break;
             case STYLE_LONG:
+                //Draw same as short hair
+                drawHairArc(canvas, -45, -90);
+
+                //Draw two extra "rotated" arcs
+                drawHairArc(canvas, -LONG_HAIR_ARC_ANGLE, -90);
+                drawHairArc(canvas, -90 + LONG_HAIR_ARC_ANGLE, -90);
+
+                //Draw rects
+                canvas.drawRect(-LONG_HAIR_RECT_X, LONG_HAIR_RECT_Y, -LONG_HAIR_RECT_X + LONG_HAIR_RECT_WIDTH,
+                        FACE_RADIUS, hairPaint);
+                canvas.drawRect(LONG_HAIR_RECT_X - LONG_HAIR_RECT_WIDTH, LONG_HAIR_RECT_Y, LONG_HAIR_RECT_X,
+                        FACE_RADIUS, hairPaint);
                 break;
             default:
                 //Should be unreachable
                 Log.e("Face", "Invalid hair style");
         }
+
+        canvas.restore();
     }
 
     protected void drawEyes(Canvas canvas){}
