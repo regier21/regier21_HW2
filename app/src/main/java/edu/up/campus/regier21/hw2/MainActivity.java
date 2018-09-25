@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
+import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,10 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO: Remove debug code when complete
         face = new Face();
-        face.setSkinColor(Color.BLUE);
-        face.setEyeColor(Color.GREEN);
+        face.randomize();
 
         faceView = findViewById(R.id.viewFace);
         faceView.setActivity(this);
@@ -123,34 +123,18 @@ public class MainActivity extends AppCompatActivity {
         public static final @IdRes int EYES_ID = R.id.radioButtonEyes;
         public static final @IdRes int SKIN_ID = R.id.radioButtonSkin;
 
-        /**
-         * Which radio button is selected.
-         * 0: Hair
-         * 1: Eyes
-         * 2: Skin
-         */
-        private int state = 0;
-
-        /**
-         * TODO: External citation for event listener (9/24)
-         * @param group
-         * @param checkedId
-         */
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             @ColorInt int color;
             switch(checkedId) {
                 case HAIR_ID:
                     color = face.getHairColor();
-                    state = 0;
                     break;
                 case EYES_ID:
                     color = face.getEyeColor();
-                    state = 1;
                     break;
                 case SKIN_ID:
                     color = face.getSkinColor();
-                    state = 2;
                     break;
                 default:
                     //Unreachable
@@ -166,14 +150,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             @ColorInt int color = Color.rgb(redSeek.getProgress(), greenSeek.getProgress(), blueSeek.getProgress());
-            switch(state){
-                case 0: //Hair selected
+            switch(group.getCheckedRadioButtonId()){
+                case HAIR_ID:
                     face.setHairColor(color);
                     break;
-                case 1: //Eyes selected
+                case EYES_ID:
                     face.setEyeColor(color);
                     break;
-                case 2: //Skin selected
+                case SKIN_ID:
                     face.setSkinColor(color);
                     break;
                 default:
