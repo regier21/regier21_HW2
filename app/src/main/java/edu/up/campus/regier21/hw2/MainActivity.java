@@ -2,6 +2,7 @@ package edu.up.campus.regier21.hw2;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.support.annotation.CallSuper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
@@ -46,8 +47,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        face = new Face();
-        face.randomize();
+        if (savedInstanceState != null){
+            face = (Face) savedInstanceState.getSerializable("Face");
+        } else {
+            face = new Face();
+            face.randomize();
+        }
 
         faceView = findViewById(R.id.viewFace);
         faceView.setActivity(this);
@@ -71,6 +76,28 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickListener(new RandomButtonListener());
     }
 
+
+    /**
+     * External citation
+     *  Date: 24 Sept. 2018
+     *  Problem: Face was (partially) randomizing when screen was rotating
+     *  Resource:
+     *      https://stackoverflow.com/questions/456211/activity-restart-on-rotation-android
+     *      https://developer.android.com/guide/topics/resources/runtime-changes
+     *      https://developer.android.com/reference/android/app/Activity.html#onSaveInstanceState(android.os.Bundle)
+     *  Solution: Face was made Serializable and stored to instance state bundle so that its settings are remembered
+     *
+     *  Called when the activity is being saved before pause
+     *
+     *  @param outState The Bundle to save state to.
+     */
+    @Override
+    @CallSuper
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("Face", face);
+    }
+
     /**
      * Populates spinnerHairStyle and sets event listener.
      */
@@ -89,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinnerHairStyle);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new StyleSpinnerListener());
+        spinner.setSelection(face.getHairStyle());
     }
 
     public void drawFace(Canvas canvas){

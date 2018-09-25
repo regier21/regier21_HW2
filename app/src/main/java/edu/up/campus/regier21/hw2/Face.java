@@ -11,6 +11,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -20,9 +22,11 @@ import java.util.Random;
  * Stores the state of the Face.
  * Can draw the face using its current state.
  * Note: This is not a view for the face.
+ *
+ * Implements Serializable so it may be restored on screen rotation.
  * @see FaceView
  */
-public class Face{
+public class Face implements Serializable{
 
     //Stores the color for the skin, eyes, and hair respectively
     private @ColorInt int skinColor = 0xFF000000;
@@ -316,6 +320,7 @@ public class Face{
                 drawHairRect(canvas, LONG_HAIR_ARC_ANGLE);
 
                 //Draw rects on both sides
+                //Starts at the top of canvas because clipping will cut it off correctly
                 canvas.drawRect(-FACE_RADIUS, -FACE_RADIUS, -FACE_RADIUS + LONG_HAIR_RECT_WIDTH,
                         LONG_HAIR_RECT_BOTTOM, hairPaint);
                 canvas.drawRect(FACE_RADIUS - LONG_HAIR_RECT_WIDTH, -FACE_RADIUS, FACE_RADIUS,
@@ -326,6 +331,7 @@ public class Face{
                 Log.e("Face", "Invalid hair style");
         }
 
+        //Removes clipping
         canvas.restore();
     }
 
