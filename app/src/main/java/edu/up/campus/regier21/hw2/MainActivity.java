@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.support.annotation.CallSuper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Called to start program
-     * @param savedInstanceState ignored
+     * @param savedInstanceState If resuming, will contain an instance of Face
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Retrieves Face instance if Activity is resuming
         if (savedInstanceState != null){
             face = (Face) savedInstanceState.getSerializable("Face");
         } else {
@@ -59,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeSpinner();
 
+        //Set up event listeners
         ColorListener listener = new ColorListener();
 
         redSeek = findViewById(R.id.seekBarRed);
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         group = findViewById(R.id.radioGroup);
         group.setOnCheckedChangeListener(listener);
-        group.check(R.id.radioButtonHair); //Also initializes seek bars in event listeners
+        group.check(R.id.radioButtonHair); //Initializes seek bars in event listener
 
         ((Button) findViewById(R.id.buttonRandom))
                 .setOnClickListener(new RandomButtonListener());
@@ -119,11 +119,20 @@ public class MainActivity extends AppCompatActivity {
         spinner.setSelection(face.getHairStyle());
     }
 
+    /**
+     * Calledby FaceView when a draw event is triggered.
+     * Done this way to seperate view (FaceView) from model (Face), despite face drawing
+     *
+     * @param canvas A square canvas centered on (0, 0) and going to positive and negative \
+     *               50 in the x and y direction.
+     */
     public void drawFace(Canvas canvas){
         face.onDraw(canvas);
-        //Log.d("MainActivity", "Drawn Face");
     }
 
+    /**
+     * Event listener for when a hair style is selected from the spinner
+     */
     protected class StyleSpinnerListener implements AdapterView.OnItemSelectedListener{
         /**
          * Called when a hair style is selected
@@ -136,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             face.setHairStyle(position);
             faceView.invalidate();
-            //Log.d("StyleSpinnerListener", String.format("Hair style: %d", position));
         }
 
         @Override
@@ -145,14 +153,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Event listener for views related to editing color.
+     * This includes the radio group and the seek bars
+     */
     protected class ColorListener implements RadioGroup.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener{
 
         public static final @IdRes int HAIR_ID = R.id.radioButtonHair;
         public static final @IdRes int EYES_ID = R.id.radioButtonEyes;
         public static final @IdRes int SKIN_ID = R.id.radioButtonSkin;
 
+        /**
+         * Called when a new radio button is selected.
+         * Updates seek bars
+         *
+         * @param group Ignored
+         * @param checkedId The ID of the newly checked radio button
+         */
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
+            //Get correct color
             @ColorInt int color;
             switch(checkedId) {
                 case HAIR_ID:
@@ -170,14 +190,26 @@ public class MainActivity extends AppCompatActivity {
                     return;
             }
 
+            //Set seek bars to match color
             redSeek.setProgress(Color.red(color));
             greenSeek.setProgress(Color.green(color));
             blueSeek.setProgress(Color.blue(color));
         }
 
+        /**
+         * Called when any of the seek bars are modified.
+         * Updates the attributes of the face.
+         *
+         * @param seekBar Ignored
+         * @param progress Ignored
+         * @param fromUser Ignored
+         */
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            //Calculates the new color
             @ColorInt int color = Color.rgb(redSeek.getProgress(), greenSeek.getProgress(), blueSeek.getProgress());
+
+            //Selects the appropriate element of the face and updates it
             switch(group.getCheckedRadioButtonId()){
                 case HAIR_ID:
                     face.setHairColor(color);
@@ -194,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
                     return; //Prevents invalidation
             }
 
+            //Redraw face
             faceView.invalidate();
         }
 
@@ -208,6 +241,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called whenever the random button is pressed.
+     * Randomizes the face and redraws.
+     * Updates the sliders to the appropriate values
+     */
     protected class RandomButtonListener implements Button.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -215,10 +253,12 @@ public class MainActivity extends AppCompatActivity {
             faceView.invalidate();
 
             //Forces sliders to update
+            //This is done by triggering the event listener for selecting a radio button
             @IdRes int id = group.getCheckedRadioButtonId();
             group.clearCheck();
             group.check(id);
 
+            //Updates the hair style spinner
             spinner.setSelection(face.getHairStyle());
         }
     }

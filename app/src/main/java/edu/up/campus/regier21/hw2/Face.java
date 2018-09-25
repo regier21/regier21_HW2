@@ -11,7 +11,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -108,6 +107,16 @@ public class Face implements Serializable{
     //The paint used to draw the pupil
     public static final Paint EYE_PAINT_PUPIL;
 
+    //Mouth constants
+    //The height from the top to the bottom of the mount
+    public static final int MOUTH_HEIGHT = 10;
+    //The positive x coordinate of the mouth edge
+    public static final int MOUTH_Y = FACE_RADIUS - 30;
+    //The upper y coordinate of the mouth
+    public static final int MOUTH_X = FACE_RADIUS - 30;
+    public static final Path MOUTH_PATH;
+    public static final Paint MOUTH_PAINT;
+
     /**
      * External citation
      *  Date: 23 Sept. 2018
@@ -135,6 +144,13 @@ public class Face implements Serializable{
         EYE_PAINT_BORDER.setColor(Color.BLACK);
         EYE_PAINT_PUPIL = new Paint();
         EYE_PAINT_PUPIL.setColor(Color.BLACK);
+
+        MOUTH_PATH = new Path();
+        MOUTH_PATH.addRect(-MOUTH_X, MOUTH_Y, MOUTH_X, MOUTH_Y + (MOUTH_HEIGHT/2), Path.Direction.CW);
+        MOUTH_PATH.addOval(new RectF(-MOUTH_X, MOUTH_Y, MOUTH_X, MOUTH_Y + MOUTH_HEIGHT), Path.Direction.CW);
+
+        MOUTH_PAINT = new Paint();
+        MOUTH_PAINT.setColor(Color.WHITE);
     }
 
     public void setSkinColor(@ColorInt int skinColor) {
@@ -245,6 +261,7 @@ public class Face implements Serializable{
 
         drawEyes(canvas);
         drawHair(canvas);
+        drawMouth(canvas);
     }
 
     /**
@@ -268,7 +285,7 @@ public class Face implements Serializable{
             return;
         }
 
-        canvas.drawRect(new RectF(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, -HAIR_RECT_BOTTOM), hairPaint);
+        canvas.drawRect(-FACE_RADIUS, -FACE_RADIUS, FACE_RADIUS, -HAIR_RECT_BOTTOM, hairPaint);
     }
 
     /**
@@ -359,5 +376,9 @@ public class Face implements Serializable{
         canvas.drawCircle(x, y, EYE_RADIUS_OUTER, EYE_PAINT_OUTER);
         canvas.drawCircle(x, y, EYE_RADIUS_INNER, eyePaint);
         canvas.drawCircle(x, y, EYE_RADIUS_PUPIL, EYE_PAINT_PUPIL);
+    }
+
+    private void drawMouth(Canvas canvas){
+        canvas.drawPath(MOUTH_PATH, MOUTH_PAINT);
     }
 }

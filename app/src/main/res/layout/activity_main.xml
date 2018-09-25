@@ -137,10 +137,9 @@
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:gravity="center_vertical"
-        android:text="TextView"
+        android:text="@string/hair_style"
         app:layout_constraintBottom_toBottomOf="@id/spinnerHairStyle"
         app:layout_constraintEnd_toStartOf="@id/spinnerHairStyle"
-        app:layout_constraintTop_toTopOf="@id/spinnerHairStyle"
         app:layout_constraintStart_toEndOf="@id/buttonRandom"
-        tools:text="Hair Style:" />
+        app:layout_constraintTop_toTopOf="@id/spinnerHairStyle" />
 </android.support.constraint.ConstraintLayout>
